@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: headerFragment(${selectedProduct.title})">
+
+<body>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<style>
+.star-rating{
+	font-size: 0;
+}
+.star-rating__wrap{
+    padding-top:3px;
+	display: inline-block;
+	font-size: 1rem;
+}
+.star-rating__wrap:after{
+	content: "";
+	display: table;
+	clear: both;
+}
+.star-rating__ico{
+	float: right;
+	padding-left: 2px;
+	cursor: pointer;
+	color: #FFB300;
+}
+.star-rating__ico:last-child{
+	padding-left: 0;
+}
+.star-rating__input{
+	display: none;
+}
+.star-rating__ico:hover:before,
+.star-rating__ico:hover ~ .star-rating__ico:before,
+.star-rating__input:checked ~ .star-rating__ico:before
+{
+	content: "\f005";
+}
+
+.star{
+	float: right;
+	color: #FFB300;
+}
+
+.checked-star:before
+{
+	content: "\f005";
+}
+
+
+</style>
+
+
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Details)}"/>
+    <div class="content">
+        <div class="heading-section">
+            <h2>Product Details</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <center>
+                <img align="center" style="width: 350px;height: 350px;" th:src="${selectedProduct} == null ? _ : @{'data:image/png;base64,'+${selectedProduct.getBase64Image()}}">
+                </center>
+            </div>
+            <div class="col-md-6">
+                <div class="product-dtl">
+                    <div class="product-info">
+                        <div class="product-name">
+                            [[${selectedProduct.title}]]
+                            <a sec:authorize="hasRole('ADMIN')" class="btn btn-info" th:href="@{'/products/edit/'+${selectedProduct.id}}">Edit</a>
+                        </div>
+                        <div class="reviews-counter">
+                            <div class="star-rating">
+                                <div class="star-rating__wrap">
+                                    <label class="star checked-star fa fa-star-o fa-lg bistar">[[${selectedProduct.getAverageRating()}]]</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-price-discount"><span>[[${selectedProduct.price}]]$</span></div>
+                    </div>
+                    Category: <a th:href="@{'/categories/'+${selectedProduct.category.id}}">[[${selectedProduct.category.name}]]</a>
+                    <form th:action="@{'/cart/add/'+${selectedProduct.id}}" method="post" th:if="${selectedProduct.getAvailable()>0}">
+                        <div class="product-count">
+                            <label for="count">Quantity</label><br>
+                            <div class="count-inlineflex">
+                                <div class="qtyminus">-</div>
+                                <div class="countfield">
+                                    <input type="text" name="count" id="count" value="1" th:max="${selectedProduct.available}" class="qty">
+                                </div>
+                                <div class="qtyplus">+</div>
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" class="round-black-btn">Add to Cart</button>
+                    </form>
+                    <div class="red-bold" th:if="${selectedProduct.getAvailable()<=0}"><br>Not available</div>
+                </div>
+            </div>
+        </div>
+        <div class="product-info-tabs">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab"
+                       aria-controls="description" aria-selected="true">Description</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab"
+                       aria-controls="review"
+                       aria-selected="false">Reviews ([[${reviewsPage.getTotalElements()}]])</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                    [[${selectedProduct.description}]]
+                </div>
+
+                <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
+                    <p class="mb-20" th:if="${reviewsPage.content.size() == 0}">There are no reviews yet.</p>
+                    <th:block th:if="${reviewsPage.content.size() > 0}">
+                        <div class="review" th:each="review : ${reviewsPage.content}">
+                            <b>[[${review.getAuthor().getUsername()}]]</b>
+                            <div class="starplace">
+                                [[${review.getDate()}]]
+                                <div class="star-rating">
+                                    <div class="star-rating__wrap">
+                                        <label th:classappend="${review.rating==5}? 'checked-star' " class="star fa fa-star-o fa-lg" title="5 out of 5 stars"></label>
+                                        <label th:classappend="${review.rating>=4}? 'checked-star' " class="star fa fa-star-o fa-lg" title="4 out of 5 stars"></label>
+                                        <label th:classappend="${review.rating>=3}? 'checked-star' " class="star fa fa-star-o fa-lg" title="3 out of 5 stars"></label>
+                                        <label th:classappend="${review.rating>=2}? 'checked-star' " class="star fa fa-star-o fa-lg" title="2 out of 5 stars"></label>
+                                        <label th:classappend="${review.rating>=1}? 'checked-star' " class="star fa fa-star-o fa-lg" title="1 out of 5 stars"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <span>[[${review.getText()}]]</span>
+                            <hr>
+                        </div>
+                        <br>
+                        <div th:replace="~{fragments/paginator :: review-pager}"/>
+
+                    </th:block>
+                    <form method="post" th:action="@{${selectedProduct.id+'/addreview'}}"
+                          sec:authorize="isAuthenticated()" th:unless="${didReview}" class="review-form">
+                        <div class="form-group">
+                            <label>Your rating</label>
+                            <div class="star-rating">
+                                <div class="star-rating__wrap">
+                                    <input class="star-rating__input" id="star-rating-5" type="radio" name="rating" value="5">
+                                    <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-5" title="5 out of 5 stars"></label>
+                                    <input class="star-rating__input" id="star-rating-4" type="radio" name="rating" value="4">
+                                    <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-4" title="4 out of 5 stars"></label>
+                                    <input class="star-rating__input" id="star-rating-3" type="radio" name="rating" value="3">
+                                    <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-3" title="3 out of 5 stars"></label>
+                                    <input class="star-rating__input" id="star-rating-2" type="radio" name="rating" value="2">
+                                    <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-2" title="2 out of 5 stars"></label>
+                                    <input class="star-rating__input" id="star-rating-1" type="radio" name="rating" value="1">
+                                    <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-1" title="1 out of 5 stars"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Your message</label>
+                            <textarea th:name="reviewtext" class="form-control" rows="5"></textarea>
+                        </div>
+                        <button type="submit" class="round-black-btn">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="~{fragments/footer :: footer}"/>
+</div>
+
+</body>
+</html>

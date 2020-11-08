@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: headerFragment(pageTitle='Shop')">
+
+<body>
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Index)}"/>
+    <div class="content">
+        <h1>Shop</h1>
+        <span th:if="${page.content.size() == 0}">Products List is empty</span>
+        <th:block th:if="${page.content.size() > 0}">
+
+            <div class="container_cards container_cards-product">
+
+                <div class="product-card" th:each="product : ${page.content}">
+                    <div class="img-product-block">
+                        <a class="product-card__img" th:href="@{'/products/' + ${product.id}}">
+                            <img th:title="${product.title}" th:src="@{'data:image/png;base64,'+${product.getBase64Image()}}">
+                        </a>
+                    </div>
+                    <div class="product-card__info">
+                        <div class="product-card__link">
+                        <a th:href="@{'/products/' + ${product.id}}">
+                            [[${product.title}]]
+                            <div class="product-card__author">[[${product.category.getName()}]]</div>
+                        </a>
+                        </div>
+                        <div class="product-card__footer">
+                            <th:block th:if="${product.getAvailable()>0}">
+                                <b>[[${product.price}]]$</b>
+                                <form method="post" th:unless="${#lists.contains(cartProducts,product)}">
+                                    <button type="submit" th:formaction="@{'cart/add/'+${product.id}}" class="btn btn-primary">Buy</button>
+                                </form>
+                                <a th:href="@{cart}" th:if="${#lists.contains(cartProducts,product)}"
+                                   class="btn btn-success">In Cart</a>
+                            </th:block>
+                            <div class="red-bold" th:if="${product.getAvailable()<=0}"><center>Not available</center></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/paginator :: pager}"/>
+        </th:block>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"/>
+</div>
+
+</body>
+</html>

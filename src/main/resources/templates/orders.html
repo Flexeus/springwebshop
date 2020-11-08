@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/head :: headerFragment(pageTitle='Orders')">
+
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Shop)}"/>
+    <div class="content">
+        <h1>Orders list</h1>
+        <span th:if="${orders.getTotalElements() == 0}">Order list is empty</span>
+        <th:block th:if="${orders.getTotalElements() > 0}">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Order №</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders.content}">
+                    <td >
+                        [[${order.id}]]
+                        <br>
+                        <a th:href="@{'/orders/' + ${order.id}}">details</a>
+                    </td>
+                    <td th:text="${order.getOrderPrice()}"/>
+                    <td th:text="${order.getStatus()}"/>
+                    <td th:text="${order.getDate()}"/>
+                </tr>
+                </tbody>
+            </table>
+        </th:block>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"/>
+</div>
+
+</body>
+</html>

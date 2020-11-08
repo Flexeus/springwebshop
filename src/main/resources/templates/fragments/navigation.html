@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<script>
+    $('#exampleModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Кнопка, что спровоцировало модальное окно
+  var recipient = button.data('whatever') // Извлечение информации из данных-* атрибутов
+  var modal = $(this)
+  modal.find('.modal-title').text('New message to ' + recipient)
+  modal.find('.modal-body input').val(recipient)
+})
+</script>
+
+
+<div th:fragment="navigation(activeTab)">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" th:classappend="${activeTab == 'Index' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/}">Home</a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'Cart' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/cart}">Cart</a>
+                </li>
+
+                <li class="nav-item" th:classappend="${activeTab == 'Categories' ? 'active':''}">
+                    <div class="btn-group">
+                    <a class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+                        <div class="dropdown-menu">
+                            <th:block th:each="category: ${categories}">
+                                <a class="dropdown-item" th:href="@{'/categories/'+${category.id}}">[[${category.getName()}]]</a>
+                            </th:block>
+                        </div>
+                    </div>
+                </li>
+
+                <li data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap" class="nav-item" th:classappend="${activeTab == 'Login' ? 'active' : ''}" sec:authorize="isAnonymous()">
+                    <a type="button"  class="nav-link btn btn-success">Login</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span sec:authentication="name"/></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{'/orders/personal'}">My orders</a>
+                            <a sec:authorize="hasRole('ADMIN')" class="dropdown-item" th:href="@{/admin}">Admin menu</a>
+                            <div class="dropdown-divider"></div>
+                            <form method="post" th:action="@{/logout}"><button type="submit" class="dropdown-item">Logout</button></form>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <form th:action="@{search}" class="mr-sm-2" method="get">
+                <div class="d-flex searchbar">
+                    <input class="search_input" type="text" name="text" placeholder="Search...">
+                    <a href="javascript:{}" class="search_icon" onclick="this.closest('form').submit(); return false;">
+                        <i class="fas fa-search"></i></a>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+
+    <div class="bd-example">
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel">Authorization</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/authenticateTheUser}" method="POST" class="form-horizontal">
+                            <div class="form-group">
+                                <input placeholder="Username:" type="text" class="form-control" id="username" name="username"/>
+                            </div>
+                            <div class="form-group">
+                                <input placeholder="Password:" class="form-control" id="password" name="password"/>
+                            </div>
+                            <a th:href="@{/registration}">Not registered yet?</a>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+
+</div>
+

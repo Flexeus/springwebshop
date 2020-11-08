@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/head :: headerFragment(pageTitle='Admin panel')">
+
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Admin)}"/>
+    <div class="content">
+        <h1>Dashboard</h1>
+        <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-info" th:href="@{'/products/add/'}">Add product</a></td>
+        <td sec:authorize="hasRole('ADMIN')"><a class="btn btn-info" th:href="@{'/categories/create/'}">Create category</a></td>
+        <ul>
+        <li><br><a th:href="@{admin/orders/}">Orders</a></li>
+            <li><a th:href="@{admin/userlist/}">Registered users</a></li>
+        </ul>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"/>
+</div>
+
+</body>
+</html>

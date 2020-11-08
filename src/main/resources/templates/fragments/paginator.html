@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<ul th:fragment="pager" class="pagination" th:if="${page.totalPages} > 1">
+    <li th:classappend="${!page.hasPrevious()} ? 'disabled'" class="page-item">
+        <a class="page-link" th:href="@{/(page=${page.number-1},size=${page.size})}" tabindex="-1">Previous</a>
+    </li>
+
+    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+        <li class="page-item" th:classappend="${page.number == i} ? 'active'">
+            <a class="page-link" th:href="@{/(page=${i},size=${page.size})}">[[${i}+1]]</a>
+        </li>
+    </th:block>
+
+    <li th:classappend="${!page.hasNext()} ? 'disabled'" class="page-item">
+        <a class="page-link" th:href="@{/(page=${page.number+1},size=${page.size})}" tabindex="-1">Next</a>
+    </li>
+
+</ul>
+
+
+<ul th:fragment="categories-pager" class="pagination" th:if="${page.totalPages} > 1">
+    <li th:classappend="${!page.hasPrevious()} ? 'disabled'" class="page-item">
+        <a class="page-link" th:href="@{'/categories/'+${category_id}(page=${page.number-1},size=${page.size})}" tabindex="-1">Previous</a>
+    </li>
+    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+        <li class="page-item" th:classappend="${page.number == i} ? 'active'">
+            <a class="page-link" th:href="@{'/categories/'+${category_id}(page=${i},size=${page.size})}">[[${i}+1]]</a>
+        </li>
+    </th:block>
+
+    <li th:classappend="${!page.hasNext()} ? 'disabled'" class="page-item">
+        <a class="page-link" th:href="@{'/categories/'+${category_id}(page=${page.number+1},size=${page.size})}" tabindex="-1">Next</a>
+    </li>
+</ul>
+
+<ul th:fragment="review-pager" class="pagination" th:if="${reviewsPage.totalPages} > 1">
+    <th:block th:each="i: ${#numbers.sequence(0, reviewsPage.totalPages - 1)}">
+        <li class="page-item" th:classappend="${reviewsPage.number == i} ? 'active'">
+            <a class="page-link"
+               th:href="@{'/products/'+${selectedProduct.id}(page=${i},size=${reviews.size})}">[[${i}+1]]</a>
+        </li>
+    </th:block>
+</ul>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/head :: headerFragment(pageTitle='Order details')">
+
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Shop)}"/>
+    <div class="content">
+        <h1 th:text="${'Order №:' +order.id}"></h1>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{'/order/'+${order.id}}">Edit</a><br>
+        <span th:text="${'Delivery address: ' + order.getDeliveryAddress()}"/><br>
+        <span th:text="${'Date: ' + order.getDate()}"/><br>
+        <span th:text="${'Status: '+ order.getStatus().toString()}"/><br>
+        <br>
+        <h3 class="blue-font bold">Order list</h3>
+        <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th></th>
+                <th>Price</th>
+                <th>Count</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="orderItem: ${order.items}">
+                <td>
+                    <a th:href="@{'/products/'+${orderItem.product.id}}">
+                        <img style="width:80px;height:80px;" th:title="${orderItem.product.title}" th:src="@{'data:image/png;base64,'+${orderItem.product.getBase64Image()}}">
+                        [[${orderItem.product.title}]]
+                    </a>
+                </td>
+                <td th:text="${orderItem.price}"></td>
+                <td th:text="${orderItem.count}"></td>
+                <td th:text="${orderItem.count * orderItem.price}"></td>
+            </tr>
+            <tr>
+                <td colspan="3" class="bold" style="text-align:right">Total amount:</td>
+                <td class="blue-font bold">[[${order.getOrderPrice()}]]</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"/>
+</div>
+
+</body>
+</html>

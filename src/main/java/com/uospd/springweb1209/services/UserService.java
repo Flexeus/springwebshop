@@ -1,0 +1,50 @@
+package com.uospd.springweb1209.services;
+
+import com.uospd.springweb1209.entities.Authority;
+import com.uospd.springweb1209.entities.User;
+import com.uospd.springweb1209.repositories.AuthorityRepository;
+import com.uospd.springweb1209.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+@Service
+public class UserService {
+
+    private UserRepository userRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
+    public User findByUsername(String username) {
+        return userRepository.findById(username).get();
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void saveUser(User user){
+        user.setEnabled(true);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        Authority authority = new Authority("ROLE_USER");
+        Set<Authority> array = Collections.singleton(authority);
+        authority.setUser(user);
+        authorityRepository.save(authority);
+        user.setAuthorities(array);
+
+    }
+}
