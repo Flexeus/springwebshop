@@ -60,7 +60,6 @@ public class ProductController {
     @Secured(value = {"ROLE_ADMIN"})
     @DeleteMapping("{id}")
     public String deleteProjectById(@PathVariable Long id){
-        System.out.println("deleting :"+id);
         productService.deleteProductByID(id);
         return "redirect:/";
     }
