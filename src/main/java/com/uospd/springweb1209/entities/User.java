@@ -12,11 +12,11 @@ import java.util.Set;
 public class User { //TODO: Валидацию в форме сделать
     @Id
     @Column(name = "username")
-    @Size(min = 2,max = 25)
+    @Size(min = 2,max = 30,message = "Name should be betweeen 2 and 30 characters")
     private String username;
 
     @Column(name = "password")
-    @Size(min = 6)
+    @Size(min = 6,max=50,message = "Password should be betweeen 6 and 50 characters")
     private String password;
 
     @Column(name = "enabled")

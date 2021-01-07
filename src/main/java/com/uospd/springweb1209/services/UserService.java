@@ -36,7 +36,16 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public boolean userExist(String username){
+        return  userRepository.findByUsername(username).isPresent();
+    }
+
+    public boolean emailExist(String email){
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public void saveUser(User user){
+        if(userExist(user.getUsername()) || emailExist(user.getEmail())) return;
         user.setEnabled(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);

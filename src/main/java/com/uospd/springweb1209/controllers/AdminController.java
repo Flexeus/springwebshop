@@ -5,6 +5,8 @@ import com.uospd.springweb1209.entities.User;
 import com.uospd.springweb1209.services.OrderService;
 import com.uospd.springweb1209.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
 
     UserService userService;
     OrderService orderService;

@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> getAllByProduct(Product product, Pageable pageable);
-    Review getByProductAndAuthor(Product product, User user);
+    Optional<Review> getByProductAndAuthor(Product product, User user);
 }

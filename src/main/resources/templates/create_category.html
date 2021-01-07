@@ -9,11 +9,11 @@
     <div th:replace="~{fragments/navigation :: navigation(Details)}"/>
     <div class="content">
         <h1>Create new category</h1>
-        <form th:action="@{/categories/create/}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/categories/create}" method="post" th:object="${category}" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="categoryName">Name</label>
-                <input type="text" class="form-control" id="categoryName" name="categoryName"
-                       aria-describedby="emailHelp" placeholder="Category name">
+                <input type="text" class="form-control" id="categoryName" th:field="*{name}" placeholder="Category name" required>
+<!--                <div class="red-bold" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>-->
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Create</button>

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -19,22 +20,25 @@ public class ReviewService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ProductService productService;
+
     public Page<Review> getProductReviews(Product product, Pageable pageable){
         return reviewRepository.getAllByProduct(product,pageable);
     }
 
-    public void createReview(Product product,User author,String reviewText,Integer rating){
-        if(userDidPreview(author,product)) return;
-        Review review = new Review(author,reviewText);
-        if(rating != null) review.setRating(rating);
+    public void createReview(User user,Long productId,Review review){
+        Product product = productService.getProductByID(productId);
         review.setProduct(product);
+        if(userDidPreview(user,review.getProduct()) || review.getText() == null) return;
+        review.setDate(new Date(System.currentTimeMillis()));
+        review.setAuthor(user);
         reviewRepository.save(review);
     }
 
     public boolean userDidPreview(User user, Product product){
         if(user == null || product == null) return false;
-        Review review = reviewRepository.getByProductAndAuthor(product, user);
-        return review != null;
+        return reviewRepository.getByProductAndAuthor(product, user).isPresent();
     }
 
     public void saveReview(Review review){

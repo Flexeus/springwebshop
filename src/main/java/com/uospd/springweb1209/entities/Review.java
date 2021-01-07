@@ -1,10 +1,10 @@
 package com.uospd.springweb1209.entities;
 
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Table(name = "reviews")
@@ -15,12 +15,13 @@ public class Review{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "author")
     private User author;
 
     @Column
     @Type(type = "org.hibernate.type.TextType")
+    @Size(min = 100,max = 100000,message = "Review should contains atleast 100 characters")
     private String text;
 
     @Column
@@ -30,7 +31,7 @@ public class Review{
     @Column
     private Date date;
 
-    @ManyToOne
+    @ManyToOne(cascade =CascadeType.DETACH)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -78,12 +79,6 @@ public class Review{
 
 
     public Review(){}
-
-    public Review(User author, String text) {
-        this.author = author;
-        this.text = text;
-        date = new Date(System.currentTimeMillis());
-    }
 
     @Override
     public String toString() {

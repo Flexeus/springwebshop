@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.uospd</groupId>
-	<artifactId>springweb1209</artifactId>
+	<artifactId>spring-shop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springweb1209</name>
+	<name>spring-shop</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

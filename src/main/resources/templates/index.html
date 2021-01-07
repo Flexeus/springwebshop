@@ -2,15 +2,34 @@
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: headerFragment(pageTitle='Shop')">
-
 <body>
+<script>
+function setFilter(){
+    var e = document.getElementById("filter");
+    alert(e);
+    location.href = 'newPage.html';
+}
+
+</script>
+
 <div class="container">
     <div th:replace="~{fragments/navigation :: navigation(Index)}"/>
     <div class="content">
         <h1>Shop</h1>
         <span th:if="${page.content.size() == 0}">Products List is empty</span>
         <th:block th:if="${page.content.size() > 0}">
-
+            <div class="input-group">
+                <div class="form-group form-inline">
+                    <label for="filter">Sort by</label>
+                    <select class="form-control form-control-sm" id="filter" onchange="location = this.value;" th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+                        <option th:selected="${#request.getParameter('sort') == ''}" th:value="@{${urlBuilder.replaceQueryParam('sort','').replaceQueryParam('order','').build().toUriString()}}">Newest</option>
+                        <option th:selected="${#request.getParameter('sort') == 'price' && #request.getParameter('order') == 'asc'}"
+                                th:value="@{${urlBuilder.replaceQueryParam('sort','price').replaceQueryParam('order','asc').build().toUriString()}}">Price: Low to High</option>
+                        <option th:selected="${#request.getParameter('sort') == 'price' && #request.getParameter('order') == 'desc'}"
+                                th:value="@{${urlBuilder.replaceQueryParam('sort','price').replaceQueryParam('order','desc').build().toUriString()}}">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
             <div class="container_cards container_cards-product">
 
                 <div class="product-card" th:each="product : ${page.content}">

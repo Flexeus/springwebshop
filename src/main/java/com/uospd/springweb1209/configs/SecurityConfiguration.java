@@ -34,6 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/products/add/**").hasAnyRole("ADMIN")
                 .antMatchers("/categories/create/**").hasAnyRole("ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
+                .antMatchers("/registration").not().authenticated()
                 .anyRequest().permitAll()
                 .and().formLogin().loginPage("/login").permitAll()
                 .loginProcessingUrl("/authenticateTheUser")

@@ -1,7 +1,6 @@
 package com.uospd.springweb1209.entities;
 
 
-
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -12,10 +11,9 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -27,21 +25,22 @@ public class Product implements Serializable {
     private Long id;
 
     @Column(name = "title")
-    @Size(min = 3,max = 30)
+    @Size(min = 3,max = 30,message = "Title should be between 3 and 30 characters")
     private String title;
 
     @Column(name = "price")
-    @Min(1)
-    @Max(100_000)
+    @Min(value = 1,message = "Price cannot be lesser than 1")
+    @Max(value = 100_000,message = "Price cannot be more than 100000")
     private int price;
 
     @Column
     @Type(type = "org.hibernate.type.TextType")
-    @Size(min = 1,max = 2000)
+    @Size(min = 10,max = 2000,message = "Product description should be between 10 and 2000 characters")
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @NotNull
     Category category;
 
     @Lob
@@ -54,8 +53,8 @@ public class Product implements Serializable {
     @Max(100000)
     private int available;
 
-    @OneToMany(mappedBy = "product",fetch = FetchType.EAGER)
-    private List<Review> reviews;
+    @OneToMany(mappedBy = "product",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Review> reviews;
 
     public Product(String title, int price) {
         this.title = title;
@@ -117,7 +116,8 @@ public class Product implements Serializable {
     public String getAverageRating(){
         if (getReviews().isEmpty()) return "0";
         NumberFormat nf = new DecimalFormat("#.##");
-        String format = nf.format(getReviews().stream().map(x -> x.getRating()).filter(x -> x != 0 && x != null).mapToInt(x -> x).average().getAsDouble());
+
+        String format = nf.format(reviews.stream().map(x -> x.getRating()).filter(x -> x != 0 && x != null).mapToInt(x -> x).average().getAsDouble());
         return format;
     }
 
@@ -152,11 +152,11 @@ public class Product implements Serializable {
         return Objects.hash(price,title);
     }
 
-    public List<Review> getReviews() {
+    public Set<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(Set<Review> reviews) {
         this.reviews = reviews;
     }
 

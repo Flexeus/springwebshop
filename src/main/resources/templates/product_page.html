@@ -13,6 +13,7 @@
     <div class="content">
         <div class="heading-section">
             <h2>Product Details</h2>
+
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -25,8 +26,11 @@
                     <div class="product-info">
                         <div class="product-name">
                             [[${selectedProduct.title}]]
-                            <a sec:authorize="hasRole('ADMIN')" class="btn btn-info" th:href="@{'/products/edit/'+${selectedProduct.id}}">Edit</a>
                         </div>
+                        <a sec:authorize="hasRole('ADMIN')" class="btn btn-info" th:href="@{'/products/edit/'+${selectedProduct.id}}">Edit</a>
+                        <form th:action="@{'/products/'+${selectedProduct.id}}" sec:authorize="hasRole('ADMIN')" th:method="DELETE">
+                            <button class="btn btn-danger" type="submit">Del</button>
+                        </form>
                         <div class="reviews-counter">
                             <div class="star-rating">
                                 <div class="star-rating__wrap">
@@ -81,6 +85,7 @@
                                 [[${review.getDate()}]]
                                 <div class="star-rating">
                                     <div class="star-rating__wrap">
+                                        <a href="#" th:text="${review.rating}"></a>
                                         <label th:classappend="${review.rating==5}? 'checked-star' " class="star fa fa-star-o fa-lg" title="5 out of 5 stars"></label>
                                         <label th:classappend="${review.rating>=4}? 'checked-star' " class="star fa fa-star-o fa-lg" title="4 out of 5 stars"></label>
                                         <label th:classappend="${review.rating>=3}? 'checked-star' " class="star fa fa-star-o fa-lg" title="3 out of 5 stars"></label>
@@ -98,28 +103,28 @@
                         <div th:replace="~{fragments/paginator :: review-pager}"/>
 
                     </th:block>
-                    <form method="post" th:action="@{${selectedProduct.id+'/addreview'}}"
+                    <form method="post" th:object="${review}" th:action="@{${selectedProduct.id+'/addreview'}}"
                           sec:authorize="isAuthenticated()" th:unless="${didReview}" class="review-form">
                         <div class="form-group">
                             <label>Your rating</label>
                             <div class="star-rating">
                                 <div class="star-rating__wrap">
-                                    <input class="star-rating__input" id="star-rating-5" type="radio" name="rating" value="5">
+                                    <input th:field="*{rating}" class="star-rating__input" id="star-rating-5" type="radio" name="rating" value="5">
                                     <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-5" title="5 out of 5 stars"></label>
-                                    <input class="star-rating__input" id="star-rating-4" type="radio" name="rating" value="4">
+                                    <input th:field="*{rating}" class="star-rating__input" id="star-rating-4" type="radio" name="rating" value="4">
                                     <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-4" title="4 out of 5 stars"></label>
-                                    <input class="star-rating__input" id="star-rating-3" type="radio" name="rating" value="3">
+                                    <input th:field="*{rating}" class="star-rating__input" id="star-rating-3" type="radio" name="rating" value="3">
                                     <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-3" title="3 out of 5 stars"></label>
-                                    <input class="star-rating__input" id="star-rating-2" type="radio" name="rating" value="2">
+                                    <input th:field="*{rating}" class="star-rating__input" id="star-rating-2" type="radio" name="rating" value="2">
                                     <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-2" title="2 out of 5 stars"></label>
-                                    <input class="star-rating__input" id="star-rating-1" type="radio" name="rating" value="1">
+                                    <input th:field="*{rating}" class="star-rating__input" id="star-rating-1" type="radio" name="rating" value="1">
                                     <label class="star-rating__ico fa fa-star-o fa-lg" for="star-rating-1" title="1 out of 5 stars"></label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Your message</label>
-                            <textarea th:name="reviewtext" class="form-control" rows="5"></textarea>
+                            <textarea th:field="*{text}" th:name="reviewtext" class="form-control" rows="5"></textarea>
                         </div>
                         <button type="submit" class="round-black-btn">Submit Review</button>
                     </form>

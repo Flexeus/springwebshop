@@ -32,6 +32,7 @@ public class OrderController {
 
     @PostMapping("/orders")
     public String createOrder(@RequestParam String deliveryAddress, @RequestParam String username){
+        if(cart.getCartItems().isEmpty())  return "redirect:/";
         User user = userService.findByUsername(username);
         Order order = orderService.createOrder(user, cart.getCartItems(),deliveryAddress);
         return "redirect:/";
@@ -39,6 +40,7 @@ public class OrderController {
 
     @GetMapping("/orders/new")
     public String createOrder(Model model,Principal principal){
+        if(cart.getCartItems().isEmpty())  return "redirect:/";
         model.addAttribute("username",principal.getName());
         return "order_registration";
     }

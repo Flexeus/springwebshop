@@ -24,6 +24,7 @@ public class OrderService {
     }
 
     public Order createOrder(User user, List<OrderItem> items, String deliveryAddress) {
+        if(items.isEmpty() || user == null || deliveryAddress.isEmpty()) return null;
         Order order = new Order();
         order.setDate(new Date());
         order.setUser(user);
@@ -34,7 +35,6 @@ public class OrderService {
             item.getProduct().setAvailable(item.getProduct().getAvailable()-item.getCount());
             item.setOrder(order);
             productService.saveProduct(item.getProduct());
-
         });
         items.clear();
         return orderRepository.save(order);

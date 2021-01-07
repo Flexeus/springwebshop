@@ -1,20 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-<ul th:fragment="pager" class="pagination" th:if="${page.totalPages} > 1">
+<ul th:fragment="pager" class="pagination" th:if="${page.totalPages} > 1" th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
     <li th:classappend="${!page.hasPrevious()} ? 'disabled'" class="page-item">
-        <a class="page-link" th:href="@{/(page=${page.number-1},size=${page.size})}" tabindex="-1">Previous</a>
+        <a class="page-link" th:href="@{${urlBuilder.replaceQueryParam('page',{page.number-1}).build().toUriString()}}" tabindex="-1">Previous</a>
     </li>
 
     <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
         <li class="page-item" th:classappend="${page.number == i} ? 'active'">
-            <a class="page-link" th:href="@{/(page=${i},size=${page.size})}">[[${i}+1]]</a>
+            <a class="page-link" th:href="@{${urlBuilder.replaceQueryParam('page',{i}).build().toUriString()}}" >[[${i}+1]]</a>
         </li>
     </th:block>
 
     <li th:classappend="${!page.hasNext()} ? 'disabled'" class="page-item">
-        <a class="page-link" th:href="@{/(page=${page.number+1},size=${page.size})}" tabindex="-1">Next</a>
+        <a class="page-link" th:href="@{${urlBuilder.replaceQueryParam('page',{page.number+1}).build().toUriString()}}" tabindex="-1">Next</a>
     </li>
-
 </ul>
 
 
