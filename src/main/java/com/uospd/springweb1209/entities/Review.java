@@ -4,6 +4,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.sql.Date;
 
@@ -26,6 +27,7 @@ public class Review{
 
     @Column
     @Max(5)
+    @Min(0)
     private int rating = 0;
 
     @Column
@@ -83,10 +85,11 @@ public class Review{
     @Override
     public String toString() {
         return "Review{" +
-                "author='" + author + '\'' +
+                "author='" + author.getUsername() + '\'' +
                 ", text='" + text + '\'' +
+                ", rating='" + rating + '\'' +
                 ", date=" + date +
-                ", product=" + product +
+                ", product=" + product.getTitle() +
                 '}';
     }
 }

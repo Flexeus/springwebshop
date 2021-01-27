@@ -16,9 +16,15 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindingResultUtils;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -45,8 +51,7 @@ public class ProductController {
     public String detailsPage(Model model,Principal principal,
                               @PathVariable("id") Long id,
                               @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
-                              @ModelAttribute Review review) {
-
+                              @ModelAttribute Review review){
         Product selectedProduct = productService.getProductByID(id);
         if(principal != null){
             Optional<User> user = userService.findByUsername(principal.getName());
@@ -99,12 +104,13 @@ public class ProductController {
 //    }
 
     @PostMapping("/{productId}/addreview")
-    public String detailsPage(@PathVariable Long productId,@Valid @ModelAttribute Review review,BindingResult bindingResult, Principal principal){
+    public String detailsPage( @PathVariable Long productId, @Valid @ModelAttribute Review review, BindingResult bindingResult, Principal principal){
+        if(principal == null) return "redirect:/products/"+productId;
         Optional<User> user = userService.findByUsername(principal.getName());
-//        if(review.getText().length() < 100){
-//            bindingResult.rejectValue(,"Review should be atle");
-//        }
-        if(!bindingResult.hasErrors() && !user.isEmpty()) reviewService.createReview(user.get(),productId,review);
+        if(bindingResult.hasErrors()){
+            bindingResult.rejectValue("text",null,"review too short");
+        }
+        else if(!user.isEmpty()) reviewService.createReview(user.get(),productId,review);
         return "redirect:/products/"+productId;
     }
 

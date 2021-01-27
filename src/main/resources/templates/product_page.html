@@ -74,6 +74,12 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                     [[${selectedProduct.description}]]
+
+
+                    <div th:each="review : ${reviewsPage.content}">
+                        [[${review.getText()}]]
+                    </div>
+
                 </div>
 
                 <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
@@ -85,7 +91,7 @@
                                 [[${review.getDate()}]] | Оценка:[[${review.rating}]]/5
                             </div>
                             <br>
-                            <span>[[${review.getText()}]]</span>
+                            [[${review.getText()}]]
                             <hr>
                         </div>
                         <br>

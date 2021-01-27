@@ -12,8 +12,10 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Base64;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "products")
@@ -113,12 +115,10 @@ public class Product implements Serializable {
         this.category = category;
     }
 
-    public String getAverageRating(){
-        if (getReviews().isEmpty()) return "0";
-        NumberFormat nf = new DecimalFormat("#.##");
-
-        String format = nf.format(reviews.stream().map(x -> x.getRating()).filter(x -> x != 0 && x != null).mapToInt(x -> x).average().getAsDouble());
-        return format;
+    public double getAverageRating(){
+        if (getReviews().isEmpty()) return 0;
+        double average = reviews.stream().map(x -> x.getRating()).filter(x -> x != 0).mapToInt(x -> x).average().orElse(0);
+        return average;
     }
 
     public byte[] getImage() {
