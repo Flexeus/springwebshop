@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,8 +29,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
     
-    public User findByUsername(String username) {
-        return userRepository.findById(username).get();
+    public Optional<User> findByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return Optional.ofNullable(user);
     }
 
     public List<User> findAll() {
@@ -37,7 +39,7 @@ public class UserService {
     }
 
     public boolean userExist(String username){
-        return  userRepository.findByUsername(username).isPresent();
+        return userRepository.findByUsername(username) != null;
     }
 
     public boolean emailExist(String email){

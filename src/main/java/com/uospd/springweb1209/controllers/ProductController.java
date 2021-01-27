@@ -7,6 +7,7 @@ import com.uospd.springweb1209.services.CategoryService;
 import com.uospd.springweb1209.services.ProductService;
 import com.uospd.springweb1209.services.ReviewService;
 import com.uospd.springweb1209.services.UserService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Arrays;
+import java.util.Optional;
 
 
 @Controller
@@ -41,19 +42,20 @@ public class ProductController {
     UserService userService;
 
     @GetMapping("/{id}")
-    public String detailsPage(Model model,Principal principal,@PathVariable("id") Long id, @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String detailsPage(Model model,Principal principal,
+                              @PathVariable("id") Long id,
+                              @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
+                              @ModelAttribute Review review) {
+
         Product selectedProduct = productService.getProductByID(id);
-        boolean didPreview = false;
-        try {
-            User byUsername = userService.findByUsername(principal.getName());
-            didPreview = reviewService.userDidPreview(byUsername, selectedProduct);
-        } catch (NullPointerException e) {
+        if(principal != null){
+            Optional<User> user = userService.findByUsername(principal.getName());
+            boolean didPreview = reviewService.userDidPreview(user.get(), selectedProduct);
+            model.addAttribute("didReview",didPreview);
         }
         Page<Review> reviewsPages = reviewService.getProductReviews(selectedProduct, pageable);
         model.addAttribute("selectedProduct", selectedProduct);
         model.addAttribute("reviewsPage",reviewsPages);
-        model.addAttribute("didReview",didPreview);
-        model.addAttribute("review",new Review());
         return "product_page";
     }
 
@@ -78,7 +80,7 @@ public class ProductController {
             bindingResult.rejectValue("image",null,"Set up image!!!");
             return "add_product";
         }
-        productService.addNewProduct(product, imageFile);
+        productService.saveOrUpdateProduct(product, imageFile);
         return "redirect:/";
     }
 
@@ -98,10 +100,11 @@ public class ProductController {
 
     @PostMapping("/{productId}/addreview")
     public String detailsPage(@PathVariable Long productId,@Valid @ModelAttribute Review review,BindingResult bindingResult, Principal principal){
-        if(bindingResult.hasErrors()) return "redirect:/products/"+productId;
-        User user = userService.findByUsername(principal.getName());
-        System.out.println(user);
-        reviewService.createReview(user,productId,review);
+        Optional<User> user = userService.findByUsername(principal.getName());
+//        if(review.getText().length() < 100){
+//            bindingResult.rejectValue(,"Review should be atle");
+//        }
+        if(!bindingResult.hasErrors() && !user.isEmpty()) reviewService.createReview(user.get(),productId,review);
         return "redirect:/products/"+productId;
     }
 

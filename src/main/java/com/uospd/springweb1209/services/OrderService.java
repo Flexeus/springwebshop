@@ -26,7 +26,7 @@ public class OrderService {
     public Order createOrder(User user, List<OrderItem> items, String deliveryAddress) {
         if(items.isEmpty() || user == null || deliveryAddress.isEmpty()) return null;
         Order order = new Order();
-        order.setDate(new Date());
+//      order.setDate(new Date());
         order.setUser(user);
         order.setStatus(Order.OrderState.PROCESSING);
         order.setDeliveryAddress(deliveryAddress);

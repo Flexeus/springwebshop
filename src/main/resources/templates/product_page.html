@@ -82,25 +82,17 @@
                         <div class="review" th:each="review : ${reviewsPage.content}">
                             <b>[[${review.getAuthor().getUsername()}]]</b>
                             <div class="starplace">
-                                [[${review.getDate()}]]
-                                <div class="star-rating">
-                                    <div class="star-rating__wrap">
-                                        <a href="#" th:text="${review.rating}"></a>
-                                        <label th:classappend="${review.rating==5}? 'checked-star' " class="star fa fa-star-o fa-lg" title="5 out of 5 stars"></label>
-                                        <label th:classappend="${review.rating>=4}? 'checked-star' " class="star fa fa-star-o fa-lg" title="4 out of 5 stars"></label>
-                                        <label th:classappend="${review.rating>=3}? 'checked-star' " class="star fa fa-star-o fa-lg" title="3 out of 5 stars"></label>
-                                        <label th:classappend="${review.rating>=2}? 'checked-star' " class="star fa fa-star-o fa-lg" title="2 out of 5 stars"></label>
-                                        <label th:classappend="${review.rating>=1}? 'checked-star' " class="star fa fa-star-o fa-lg" title="1 out of 5 stars"></label>
-                                    </div>
-                                </div>
+                                [[${review.getDate()}]] | Оценка:[[${review.rating}]]/5
                             </div>
-
-
+                            <br>
                             <span>[[${review.getText()}]]</span>
                             <hr>
                         </div>
                         <br>
                         <div th:replace="~{fragments/paginator :: review-pager}"/>
+
+
+
 
                     </th:block>
                     <form method="post" th:object="${review}" th:action="@{${selectedProduct.id+'/addreview'}}"
@@ -125,6 +117,7 @@
                         <div class="form-group">
                             <label>Your message</label>
                             <textarea th:field="*{text}" th:name="reviewtext" class="form-control" rows="5"></textarea>
+                            <div class="red-bold" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Error</div>
                         </div>
                         <button type="submit" class="round-black-btn">Submit Review</button>
                     </form>

@@ -13,24 +13,24 @@
             <div class="form-group">
                 <label for="login">Login</label>
                 <input type="text" class="form-control" id="login" th:field="*{username}" placeholder="Login">
-                <div class="red-bold" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">LKEKE</div>
+                <div class="red-bold" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</div>
 
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password">
-                <div class="red-bold" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">LKEKE</div>
+                <div class="red-bold" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
                 <hr>
 
                 <label for="firstName">Firstname</label>
                 <input type="text" class="form-control" id="firstName" th:field="*{firstname}" placeholder="Firstname">
-                <div class="red-bold" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">LKEKE</div>
+                <div class="red-bold" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">Error</div>
 
                 <label for="lastname">Lastname</label>
                 <input type="text" class="form-control" id="lastname" th:field="*{lastname}" placeholder="Lastname">
-                <div class="red-bold" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">LKEKE</div>
+                <div class="red-bold" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">Error</div>
 
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email">
-                <div class="red-bold" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">LKEKE</div>
+                <div class="red-bold" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Go</button>

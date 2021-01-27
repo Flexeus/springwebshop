@@ -17,9 +17,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
     Page<Product> findAllByCategoryId(Long categoryId, Pageable pageable);
 
-
+    @Override
     @Modifying
-    @Query(value = "delete Product where id = :id",nativeQuery = false)
+    @Query(value = "delete Product where id = :id")
     void deleteById(Long id);
 }
 

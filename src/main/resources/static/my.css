@@ -470,6 +470,8 @@ a.cart-item:hover{
     line-height: 35px;
 }
 
+
+/*RATING */
 label .bigstar{
  line-height: 55px;
 }
@@ -551,11 +553,30 @@ label .bigstar{
 	color: #FFB300;
 }
 
-.checked-star:before
+.checked-star
 {
-	content: "\f005";
+	content: "\f005\f005\f005";
 }
 
+.five-stars:after
+{
+    content: "\f005\f005\f005\f005\f005";
+}
+
+.four-stars:before
+{
+    content: "\f005\f005\f005\f005";
+}
+
+.three-stars:before
+{
+    content: "\f005\f005\f005\f005";
+}
+
+
+.notexist:after{
+    content:"";
+}
 
 .product-dtl p {
 	font-size: 14px;
@@ -606,7 +627,7 @@ label .bigstar{
 	padding: 30px 20px;
 	font-size: 17px;
 	line-height: 24px;
-	color: #7a7a7a;
+	color: #333;
 }
 
 .review-form .form-group {

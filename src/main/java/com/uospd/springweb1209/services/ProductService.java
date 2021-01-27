@@ -20,7 +20,6 @@ import java.util.List;
 public class ProductService {
     private ProductRepository productRepository;
 
-
     public Page<Product> getAllProductsPage(Pageable pageable){
         Page<Product> products = productRepository.findAll(pageable);
        // Page<Product> products = productRepository.findAll(pageable);
@@ -41,7 +40,7 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public void addNewProduct(Product product, MultipartFile imageFile) {
+    public void saveOrUpdateProduct(Product product, MultipartFile imageFile) {
         try {
             if(imageFile.isEmpty()) return;
             product.setImage(imageFile.getBytes());
@@ -53,16 +52,6 @@ public class ProductService {
 
     public Page<Product> getAllProductsByCategoryId(Long categoryId,Pageable pageable){
         return productRepository.findAllByCategoryId(categoryId,pageable);
-    }
-
-    public void updateProduct(Product product,MultipartFile imageFile){
-        try {
-            if(imageFile != null && imageFile.getBytes().length>50) product.setImage(imageFile.getBytes());
-        //    else product.setImage(getProductByID(product.getId()).getImage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        productRepository.saveAndFlush(product);
     }
 
     public void saveProduct(Product product){

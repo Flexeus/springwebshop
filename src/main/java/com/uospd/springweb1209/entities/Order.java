@@ -1,5 +1,7 @@
 package com.uospd.springweb1209.entities;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +16,8 @@ public class Order {
     private Long id;
 
     @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date date;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
@@ -60,10 +64,10 @@ public class Order {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+//
+//    public void setDate(Date date) {
+//        this.date = date;
+//    }
 
     public Date getDate() {
         return date;
