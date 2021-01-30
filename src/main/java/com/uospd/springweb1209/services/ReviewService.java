@@ -32,7 +32,6 @@ public class ReviewService {
         Product product = productService.getProductByID(productId);
         review.setProduct(product);
         if(userDidPreview(user,review.getProduct()) || review.getText() == null) return;
-        review.setDate(new Date(System.currentTimeMillis()));
         review.setAuthor(user);
         reviewRepository.save(review);
     }

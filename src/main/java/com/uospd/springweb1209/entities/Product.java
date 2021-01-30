@@ -1,6 +1,9 @@
 package com.uospd.springweb1209.entities;
 
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -9,14 +12,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Base64;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product implements Serializable {
@@ -24,95 +24,52 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Getter
     private Long id;
 
     @Column(name = "title")
     @Size(min = 3,max = 30,message = "Title should be between 3 and 30 characters")
+    @NotNull
+    @Getter @Setter
     private String title;
 
     @Column(name = "price")
     @Min(value = 1,message = "Price cannot be lesser than 1")
     @Max(value = 100_000,message = "Price cannot be more than 100000")
+    @Getter @Setter
     private int price;
 
     @Column
     @Type(type = "org.hibernate.type.TextType")
     @Size(min = 10,max = 2000,message = "Product description should be between 10 and 2000 characters")
+    @Getter @Setter
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @NotNull
+    @Getter @Setter
     Category category;
 
     @Lob
     @Column(name = "image") //,columnDefinition = "MEDIUMBLOB"
     @Type(type = "org.hibernate.type.ImageType")
+    @NotNull
+    @Setter
     private byte[] image;
 
     @Column
+    @Getter @Setter
     @Min(0)
     @Max(100000)
     private int available;
 
     @OneToMany(mappedBy = "product",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Getter @Setter
     private Set<Review> reviews;
 
     public Product(String title, int price) {
         this.title = title;
         this.price = price;
-    }
-
-
-    public Product() {
-    }
-
-    public int getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(int available) {
-        this.available = available;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public double getAverageRating(){
@@ -122,20 +79,11 @@ public class Product implements Serializable {
     }
 
     public byte[] getImage() {
-        if(image == null){
-            byte[] b = new byte[1];
-            return b;
-        }
         return image;
     }
 
     public String getBase64Image() {
         return Base64.getEncoder().encodeToString(image);
-        //return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
     }
 
     @Override
@@ -144,22 +92,15 @@ public class Product implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
         return  id == product.id && price == product.price &&
-                title.equals(product.title);
+                title.equals(product.title) &&
+                category.equals(product.category) &&
+                description == product.getDescription();
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(price,title);
     }
-
-    public Set<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(Set<Review> reviews) {
-        this.reviews = reviews;
-    }
-
 
     @Override
     public String toString() {

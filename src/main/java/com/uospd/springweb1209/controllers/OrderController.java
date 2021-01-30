@@ -5,6 +5,7 @@ import com.uospd.springweb1209.entities.User;
 import com.uospd.springweb1209.services.OrderService;
 import com.uospd.springweb1209.services.UserService;
 import com.uospd.springweb1209.utils.ShoppingCart;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,23 +20,18 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Controller
 public class OrderController {
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ShoppingCart cart;
+    private OrderService orderService;
+    private UserService userService;
+    private ShoppingCart cart;
 
     @PostMapping("/orders")
     public String createOrder(@RequestParam String deliveryAddress, @RequestParam String username){
         Optional<User> user = userService.findByUsername(username);
         if(cart.getCartItems().isEmpty() || user.isEmpty())  return "redirect:/";
-        Order order = orderService.createOrder(user.get(), cart.getCartItems(),deliveryAddress);
+        orderService.createOrder(user.get(), cart.getCartItems(),deliveryAddress);
         return "redirect:/";
     }
 

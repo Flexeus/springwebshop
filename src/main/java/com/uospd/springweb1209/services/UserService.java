@@ -51,11 +51,10 @@ public class UserService {
         user.setEnabled(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        Authority authority = new Authority("ROLE_USER");
-        Set<Authority> array = Collections.singleton(authority);
-        authority.setUser(user);
-        authorityRepository.save(authority);
-        user.setAuthorities(array);
+        Authority roleUser = new Authority("ROLE_USER");
+        user.addAuthority(roleUser);
+        roleUser.setUser(user);
+        authorityRepository.save(roleUser);
 
     }
 }

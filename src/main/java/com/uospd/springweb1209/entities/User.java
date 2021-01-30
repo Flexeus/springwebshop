@@ -1,32 +1,38 @@
 package com.uospd.springweb1209.entities;
 
 
+import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
-public class User { //TODO: Валидацию в форме сделать
+@Data
+public class User implements UserDetails{
     @Id
     @Column(name = "username")
+
     @Size(min = 2,max = 30,message = "Name should be betweeen 2 and 30 characters")
     private String username;
 
+    @Size(min = 5,message = "Password should have atleast 5 characters")
     @Column(name = "password")
-    @Size(min = 6,max=50,message = "Password should be betweeen 6 and 50 characters")
+    @NotNull
     private String password;
 
     @Column(name = "enabled")
     private boolean enabled;
 
     @OneToMany(mappedBy = "user")
-    private Set<Authority> authorities;
-
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private Set<Authority> authorities = new HashSet<>();
 
     @Column
     @Size(min = 2,max = 25)
@@ -40,67 +46,34 @@ public class User { //TODO: Валидацию в форме сделать
     @Email
     private String email;
 
-    public String getUsername() {
-        return username;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL)
+    private Set<Review> reviews;
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Set<Authority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
     }
 
     public void addAuthority(Authority authority){
         authorities.add(authority);
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public User() {
+    }
+
+
+    public boolean isAccountNonExpired(){
+        return true;
+    }
+
+    public boolean isAccountNonLocked(){
+        return true;
+    }
+
+    public boolean isCredentialsNonExpired(){
+        return true;
     }
 
     @Override

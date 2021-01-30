@@ -1,38 +1,31 @@
 package com.uospd.springweb1209.entities;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.*;
+
+@NoArgsConstructor
 @Entity
 @Table(name = "authorities")
-public class Authority {
+public class Authority implements GrantedAuthority{
     @Id
-    @Column(name = "authority")
-    private String authority;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "username")
+    @Getter
+    @Setter
     private User user;
 
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Authority() {
-    }
+    @Column(name = "authority")
+    @Getter
+    private String authority;
 
     public Authority(String authority) {
         this.authority = authority;

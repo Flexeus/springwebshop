@@ -1,11 +1,18 @@
 package com.uospd.springweb1209.entities;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Check;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
 @Table(name = "categories")
+@Data
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,42 +20,21 @@ public class Category {
 
     @Column
     @Size(min = 2,max = 20)
+    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Product> products;
 
-    public Category(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+//    public Category(Long id, String name) {
+//        this.id = id;
+//        this.name = name;
+//    }
 
     public Category() {
     }
 
-    public Category(String categoryName) {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
+    public Category(String name) {
         this.name = name;
     }
 

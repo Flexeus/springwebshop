@@ -7,6 +7,7 @@ import com.uospd.springweb1209.services.CategoryService;
 import com.uospd.springweb1209.services.ProductService;
 import com.uospd.springweb1209.services.ReviewService;
 import com.uospd.springweb1209.services.UserService;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,22 +31,14 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
 
-
+@AllArgsConstructor
 @Controller
 @RequestMapping("/products")
 public class ProductController {
-
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    CategoryService categoryService;
-
-    @Autowired
-    ReviewService reviewService;
-
-    @Autowired
-    UserService userService;
+    private ProductService productService;
+    private CategoryService categoryService;
+    private ReviewService reviewService;
+    private UserService userService;
 
     @GetMapping("/{id}")
     public String detailsPage(Model model,Principal principal,

@@ -4,6 +4,7 @@ import com.uospd.springweb1209.entities.Order;
 import com.uospd.springweb1209.entities.User;
 import com.uospd.springweb1209.services.OrderService;
 import com.uospd.springweb1209.services.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.proxy.Enhancer;
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-
+@AllArgsConstructor
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-    UserService userService;
-    OrderService orderService;
+    private UserService userService;
+    private OrderService orderService;
 
     @GetMapping("")
     public String adminPage(){
@@ -45,12 +46,4 @@ public class AdminController {
         return "orders";
     }
 
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
 }

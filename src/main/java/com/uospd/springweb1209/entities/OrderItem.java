@@ -1,8 +1,11 @@
 package com.uospd.springweb1209.entities;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Data
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -27,46 +30,6 @@ public class OrderItem {
 
 
     public OrderItem() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     public void incCount(int count){

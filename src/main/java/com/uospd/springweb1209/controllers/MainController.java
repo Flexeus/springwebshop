@@ -9,6 +9,7 @@ import com.uospd.springweb1209.services.CategoryService;
 import com.uospd.springweb1209.services.ProductService;
 import com.uospd.springweb1209.services.UserService;
 import com.uospd.springweb1209.utils.ShoppingCart;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,20 +23,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
+@AllArgsConstructor
 @Controller
 public class MainController {
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    CategoryService categoryService;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ShoppingCart cart;
+    private ProductService productService;
+    private CategoryService categoryService;
+    private UserService userService;
+    private ShoppingCart cart;
 
     @GetMapping("/login")
     public String loginPage(){
@@ -49,9 +43,13 @@ public class MainController {
 
     @PostMapping("/registration")
     public String registrationPost(@Valid @ModelAttribute User user, BindingResult bindingResult){
+        System.out.println("in controller");
         if(userService.userExist(user.getUsername())) bindingResult.rejectValue("username",null,"User already registered!");
         if(userService.emailExist(user.getEmail())) bindingResult.rejectValue("email",null,"User with this email already registered!");
-        if(bindingResult.hasErrors()) return "registration";
+        if(bindingResult.hasErrors()){
+            System.out.println(bindingResult.getAllErrors());
+            return "registration";
+        }
         userService.saveUser(user);
         return "redirect:/";
     }
