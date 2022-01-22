@@ -1,6 +1,7 @@
 package com.uospd.springweb1209.entities;
 
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,60 +13,58 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "products")
+@Getter
 public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Getter
     private Long id;
 
     @Column(name = "title")
     @Size(min = 3,max = 30,message = "Title should be between 3 and 30 characters")
     @NotNull
-    @Getter @Setter
+    @Setter
     private String title;
 
     @Column(name = "price")
     @Min(value = 1,message = "Price cannot be lesser than 1")
     @Max(value = 100_000,message = "Price cannot be more than 100000")
-    @Getter @Setter
+    @Setter
     private int price;
 
     @Column
     @Type(type = "org.hibernate.type.TextType")
     @Size(min = 10,max = 2000,message = "Product description should be between 10 and 2000 characters")
-    @Getter @Setter
+    @Setter
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    @Getter @Setter
-    Category category;
+    @Setter
+    private Category category;
 
     @Lob
     @Column(name = "image") //,columnDefinition = "MEDIUMBLOB"
     @Type(type = "org.hibernate.type.ImageType")
     @NotNull
-    @Setter
+    @Setter @Getter(AccessLevel.PRIVATE)
     private byte[] image;
 
     @Column
-    @Getter @Setter
+    @Setter
     @Min(0)
     @Max(100000)
     private int available;
 
-    @OneToMany(mappedBy = "product",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @Getter @Setter
-    private Set<Review> reviews;
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    @Setter
+    private List<Review> reviews;
 
     public Product(String title, int price) {
         this.title = title;
@@ -73,13 +72,8 @@ public class Product implements Serializable {
     }
 
     public double getAverageRating(){
-        if (getReviews().isEmpty()) return 0;
-        double average = reviews.stream().map(x -> x.getRating()).filter(x -> x != 0).mapToInt(x -> x).average().orElse(0);
-        return average;
-    }
-
-    public byte[] getImage() {
-        return image;
+        if (reviews == null || reviews.isEmpty()) return 0;
+        return reviews.stream().map(x -> x.getRating()).filter(x -> x != 0).mapToInt(x -> x).average().orElse(0);
     }
 
     public String getBase64Image() {
@@ -90,11 +84,11 @@ public class Product implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if(o.hashCode() != this.hashCode()) return false;
         Product product = (Product) o;
-        return  id == product.id && price == product.price &&
+        return  id.equals(product.id) && price == product.price &&
                 title.equals(product.title) &&
-                category.equals(product.category) &&
-                description == product.getDescription();
+                description.equals(product.getDescription());
     }
 
     @Override

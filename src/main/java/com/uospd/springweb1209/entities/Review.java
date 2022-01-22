@@ -1,7 +1,6 @@
 package com.uospd.springweb1209.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,42 +14,39 @@ import java.util.Date;
 
 @Table(name = "reviews")
 @Entity
+@Data
+@EqualsAndHashCode
+@NoArgsConstructor
 public class Review{
-    @Column
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.LAZY)
     @JoinColumn(name = "author")
-    @Getter @Setter
     private User author;
 
-    @Column
+    @Column(nullable = false)
     @Type(type = "org.hibernate.type.TextType")
     @Size(min = 100,max = 100000,message = "Review should contains atleast 100 characters")
     @NotNull
-    @Getter @Setter
     private String text;
 
     @Column
-    @Getter @Setter
     @Min(0) @Max(5)
     private int rating = 0;
 
     @Column
     @CreationTimestamp
     @DateTimeFormat
-    @Getter
+    @Setter(AccessLevel.PRIVATE)
     private Date date;
-
 
     @ManyToOne(cascade =CascadeType.DETACH)
     @JoinColumn(name = "product_id")
-    @Getter @Setter
     private Product product;
-
-    public Review(){}
 
     @Override
     public String toString() {

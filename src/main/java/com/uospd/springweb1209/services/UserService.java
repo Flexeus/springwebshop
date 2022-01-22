@@ -4,31 +4,20 @@ import com.uospd.springweb1209.entities.Authority;
 import com.uospd.springweb1209.entities.User;
 import com.uospd.springweb1209.repositories.AuthorityRepository;
 import com.uospd.springweb1209.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthorityRepository authorityRepository;
 
-    private UserRepository userRepository;
-
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private AuthorityRepository authorityRepository;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-    
     public Optional<User> findByUsername(String username) {
         User user = userRepository.findByUsername(username);
         return Optional.ofNullable(user);
@@ -42,12 +31,13 @@ public class UserService {
         return userRepository.findByUsername(username) != null;
     }
 
-    public boolean emailExist(String email){
+    public boolean emailRegistered(String email){
         return userRepository.findByEmail(email).isPresent();
     }
 
     public void saveUser(User user){
-        if(userExist(user.getUsername()) || emailExist(user.getEmail())) return;
+        if(user.getEmail() == null || !user.getEmail().contains("@")) return;
+        if(userExist(user.getUsername()) || emailRegistered(user.getEmail())) return;
         user.setEnabled(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);

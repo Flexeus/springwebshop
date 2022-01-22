@@ -43,8 +43,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public String detailsPage(Model model,Principal principal,
                               @PathVariable("id") Long id,
-                              @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
-                              @ModelAttribute Review review){
+                              @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,@ModelAttribute Review review, BindingResult bindingResult){
         Product selectedProduct = productService.getProductByID(id);
         if(principal != null){
             Optional<User> user = userService.findByUsername(principal.getName());
@@ -97,13 +96,18 @@ public class ProductController {
 //    }
 
     @PostMapping("/{productId}/addreview")
-    public String detailsPage( @PathVariable Long productId, @Valid @ModelAttribute Review review, BindingResult bindingResult, Principal principal){
+    public String detailsPage( @PathVariable Long productId, Principal principal,
+                               @Valid @ModelAttribute Review review, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         if(principal == null) return "redirect:/products/"+productId;
         Optional<User> user = userService.findByUsername(principal.getName());
+        if(!user.isPresent()) return "redirect:/products/"+productId;
         if(bindingResult.hasErrors()){
-            bindingResult.rejectValue("text",null,"review too short");
+            System.out.println("rejecting...");
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.register", bindingResult);
+            redirectAttributes.addFlashAttribute("review", review);
+            return "redirect:/products/"+productId;
         }
-        else if(!user.isEmpty()) reviewService.createReview(user.get(),productId,review);
+        else reviewService.createReview(user.get(),productId,review);
         return "redirect:/products/"+productId;
     }
 

@@ -470,6 +470,11 @@ a.cart-item:hover{
     line-height: 35px;
 }
 
+span.price {
+  float: right;
+  color: grey;
+}
+
 
 /*RATING */
 label .bigstar{

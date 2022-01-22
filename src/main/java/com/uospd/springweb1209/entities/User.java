@@ -2,8 +2,10 @@ package com.uospd.springweb1209.entities;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,14 +18,14 @@ import java.util.*;
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
 public class User implements UserDetails{
     @Id
     @Column(name = "username")
-
-    @Size(min = 2,max = 30,message = "Name should be betweeen 2 and 30 characters")
+    @Size(min = 2,max = 30,message = "Name should be between 2 and 30 characters")
     private String username;
 
-    @Size(min = 5,message = "Password should have atleast 5 characters")
+    @Size(min = 5,message = "Password should have at least 5 characters")
     @Column(name = "password")
     @NotNull
     private String password;
@@ -43,7 +45,8 @@ public class User implements UserDetails{
     private String lastname;
 
     @Column
-    @Email
+    @Email(message = "Incorrect email")
+    @Size(min = 4, message = "Incorrect email")
     private String email;
 
     @OneToMany(mappedBy = "user")
@@ -59,10 +62,6 @@ public class User implements UserDetails{
     public void addAuthority(Authority authority){
         authorities.add(authority);
     }
-
-    public User() {
-    }
-
 
     public boolean isAccountNonExpired(){
         return true;

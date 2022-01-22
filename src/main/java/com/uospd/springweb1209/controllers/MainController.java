@@ -10,7 +10,6 @@ import com.uospd.springweb1209.services.ProductService;
 import com.uospd.springweb1209.services.UserService;
 import com.uospd.springweb1209.utils.ShoppingCart;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,9 +44,8 @@ public class MainController {
     public String registrationPost(@Valid @ModelAttribute User user, BindingResult bindingResult){
         System.out.println("in controller");
         if(userService.userExist(user.getUsername())) bindingResult.rejectValue("username",null,"User already registered!");
-        if(userService.emailExist(user.getEmail())) bindingResult.rejectValue("email",null,"User with this email already registered!");
+        if(userService.emailRegistered(user.getEmail())) bindingResult.rejectValue("email",null,"User with this email already registered!");
         if(bindingResult.hasErrors()){
-            System.out.println(bindingResult.getAllErrors());
             return "registration";
         }
         userService.saveUser(user);
@@ -55,7 +53,8 @@ public class MainController {
     }
 
     @GetMapping({"/","/index"})
-    public String shopPage(@RequestParam(required = false,defaultValue = "desc") String order, Model model, @PageableDefault(size = 10,sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+    public String shopPage(@RequestParam(required = false,defaultValue = "desc") String order, Model model, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+
         Sort sort = order.equals("asc") ? pageable.getSort().ascending() : pageable.getSort().descending();
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         Page<Product> page = productService.getAllProductsPage(pageable);
@@ -63,7 +62,6 @@ public class MainController {
         model.addAttribute("cartProducts",cart.getCartProducts());
         return "index";
     }
-
 
     @GetMapping("/categories/{categoryId}")
     public String categoryPage(@PathVariable Long categoryId, @RequestParam(required = false,defaultValue = "desc") String order, Model model,@PageableDefault(size = 15,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){

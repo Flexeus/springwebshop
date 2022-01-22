@@ -48,11 +48,11 @@ function setFilter(){
                         <div class="product-card__footer">
                             <th:block th:if="${product.getAvailable()>0}">
                                 <b>[[${product.price}]]$</b>
+                                <a th:href="@{cart}" th:if="${#lists.contains(cartProducts,product)}" class="btn btn-success">In Cart</a>
                                 <form method="post" th:unless="${#lists.contains(cartProducts,product)}">
                                     <button type="submit" th:formaction="@{'cart/add/'+${product.id}}" class="btn btn-primary">Buy</button>
                                 </form>
-                                <a th:href="@{cart}" th:if="${#lists.contains(cartProducts,product)}"
-                                   class="btn btn-success">In Cart</a>
+
                             </th:block>
                             <div class="red-bold" th:if="${product.getAvailable()<=0}"><center>Not available</center></div>
                         </div>

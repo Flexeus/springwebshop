@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -23,10 +24,10 @@ public class OrderService {
         return orderRepository.getOne(id);
     }
 
+    @Transactional
     public Order createOrder(User user, List<OrderItem> items, String deliveryAddress) {
         if(items.isEmpty() || user == null || deliveryAddress.isEmpty()) return null;
         Order order = new Order();
-//      order.setDate(new Date());
         order.setUser(user);
         order.setStatus(Order.OrderState.PROCESSING);
         order.setDeliveryAddress(deliveryAddress);

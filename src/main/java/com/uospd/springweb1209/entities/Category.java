@@ -1,9 +1,12 @@
 package com.uospd.springweb1209.entities;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.boot.web.servlet.support.ServletContextApplicationContextInitializer;
+import org.springframework.web.method.ControllerAdviceBean;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,37 +16,24 @@ import java.util.List;
 @Entity
 @Table(name = "categories")
 @Data
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true,nullable = false)
     @Size(min = 2,max = 20)
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private List<Product> products;
-
-//    public Category(Long id, String name) {
-//        this.id = id;
-//        this.name = name;
-//    }
-
-    public Category() {
-    }
 
     public Category(String name) {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", products=" + products +
-                '}';
-    }
 }

@@ -6,6 +6,7 @@ import com.uospd.springweb1209.services.OrderService;
 import com.uospd.springweb1209.services.UserService;
 import com.uospd.springweb1209.utils.ShoppingCart;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Controller
 public class OrderController {
-    private OrderService orderService;
-    private UserService userService;
-    private ShoppingCart cart;
+    private final OrderService orderService;
+    private final UserService userService;
+    private final ShoppingCart cart;
 
     @PostMapping("/orders")
     public String createOrder(@RequestParam String deliveryAddress, @RequestParam String username){
@@ -37,8 +38,10 @@ public class OrderController {
 
     @GetMapping("/orders/new")
     public String createOrder(Model model,Principal principal){
-        if(cart.getCartItems().isEmpty())  return "redirect:/";
+        if(principal == null || cart.getCartItems().isEmpty())  return "redirect:/";
         model.addAttribute("username",principal.getName());
+        model.addAttribute("cartitems",cart.getCartItems());
+        model.addAttribute("cartprice",cart.getCartPrice());
         return "order_registration";
     }
 

@@ -115,7 +115,7 @@
                         </div>
                         <div class="form-group">
                             <label>Your message</label>
-                            <textarea th:field="*{text}" th:name="reviewtext" class="form-control" rows="5"></textarea>
+                            <textarea th:field="*{text}" th:name="text" class="form-control" rows="5"></textarea>
                             <div class="red-bold" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Error</div>
                         </div>
                         <button type="submit" class="round-black-btn">Submit Review</button>

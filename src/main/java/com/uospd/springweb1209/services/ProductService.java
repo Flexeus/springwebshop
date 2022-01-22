@@ -3,6 +3,7 @@ package com.uospd.springweb1209.services;
 import com.uospd.springweb1209.entities.Category;
 import com.uospd.springweb1209.entities.Product;
 import com.uospd.springweb1209.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public Page<Product> getAllProductsPage(Pageable pageable){
         Page<Product> products = productRepository.findAll(pageable);
@@ -56,11 +58,6 @@ public class ProductService {
 
     public void saveProduct(Product product){
         productRepository.save(product);
-    }
-
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
     }
 
 }

@@ -13,8 +13,30 @@
                 <input type="text" class="form-control" id="deliveryAddress" th:name="deliveryAddress" required>
             </div>
             <input type="hidden" th:value="${username}" name="username">
+
+
             <button type="submit" class="btn btn-primary">Confirm</button>
         </form>
+        <div class="col-75">
+            <form method="post" th:action="@{/pay}">
+                <div class="col-50">
+                    <h3>Payment</h3>
+                    <label>Accepted Cards</label>
+                    <div class="icon-container">
+                        <i class="fa fa-cc-visa" style="color:navy;"></i>
+                        <i class="fa fa-cc-amex" style="color:blue;"></i>
+                        <i class="fa fa-cc-mastercard" style="color:red;"></i>
+                        <i class="fa fa-cc-discover" style="color:orange;"></i>
+                    </div>
+                    <label for="price">Total</label>
+                    <input type="text" id="price" name="price" th:value="${cartprice}">
+                    <label for="description">Payment Description</label>
+                    <input type="text" id="description" name="description" placeholder="Payment Description">
+                </div>
+
+                <input type="submit" value="Continue to checkout" class="btn btn-primary">
+            </form>
+        </div>
 
         <div th:replace="~{fragments/footer :: footer}"/>
     </div>

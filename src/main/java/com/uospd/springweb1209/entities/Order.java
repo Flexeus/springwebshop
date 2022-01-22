@@ -1,8 +1,6 @@
 package com.uospd.springweb1209.entities;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -14,43 +12,47 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Data
+@NoArgsConstructor
 public class Order {
-    @Getter
+    @Setter(AccessLevel.PRIVATE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Getter
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @Setter(AccessLevel.PRIVATE)
     private Date date;
 
-    @Getter @Setter
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "username")
-    @Setter @Getter
+    @JoinColumn(name = "username",nullable = false)
     private User user;
 
-    @Getter @Setter
-    @Column(name = "delivery_address")
+    @Column(name = "delivery_address",nullable = false)
     @NotNull
     private String DeliveryAddress;
 
-    @Setter @Getter
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderState status;
 
-    public Order() { }
-
-    public int getOrderPrice(){
-        return items.stream().mapToInt(x -> x.getCount()*x.getProduct().getPrice()).sum();
-    }
+    private String currency;
+    private String method;
+    private String intent;
+    private String description;
+    private Double price;
+//
+//    public Double getPrice(){
+//        double sum = items.stream().mapToDouble(x -> x.getCount()*x.getProduct().getPrice()).sum();
+//        System.out.println("order price:"+sum);
+//        return sum;
+//    }
 
 
     public enum OrderState{
