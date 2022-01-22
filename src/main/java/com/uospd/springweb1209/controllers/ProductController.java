@@ -41,9 +41,8 @@ public class ProductController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public String detailsPage(Model model,Principal principal,
-                              @PathVariable("id") Long id,
-                              @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,@ModelAttribute Review review, BindingResult bindingResult){
+    public String detailsPage(Model model,Principal principal, @PathVariable("id") Long id,
+                              @PageableDefault(size = 6,sort = "date", direction = Sort.Direction.DESC) Pageable pageable,@Valid @ModelAttribute Review review, BindingResult bindingResult){
         Product selectedProduct = productService.getProductByID(id);
         if(principal != null){
             Optional<User> user = userService.findByUsername(principal.getName());
@@ -53,6 +52,11 @@ public class ProductController {
         Page<Review> reviewsPages = reviewService.getProductReviews(selectedProduct, pageable);
         model.addAttribute("selectedProduct", selectedProduct);
         model.addAttribute("reviewsPage",reviewsPages);
+//        if (!model.containsAttribute("review")) {
+//            model.addAttribute("review", new Review());
+//        }
+
+
         return "product_page";
     }
 
@@ -100,14 +104,11 @@ public class ProductController {
                                @Valid @ModelAttribute Review review, BindingResult bindingResult, RedirectAttributes redirectAttributes){
         if(principal == null) return "redirect:/products/"+productId;
         Optional<User> user = userService.findByUsername(principal.getName());
-        if(!user.isPresent()) return "redirect:/products/"+productId;
         if(bindingResult.hasErrors()){
-            System.out.println("rejecting...");
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.register", bindingResult);
             redirectAttributes.addFlashAttribute("review", review);
-            return "redirect:/products/"+productId;
         }
-        else reviewService.createReview(user.get(),productId,review);
+        else if(user.isPresent()) reviewService.createReview(user.get(),productId,review);
         return "redirect:/products/"+productId;
     }
 

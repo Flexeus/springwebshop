@@ -30,8 +30,7 @@ public class Review{
 
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.TextType")
-    @Size(min = 100,max = 100000,message = "Review should contains atleast 100 characters")
-    @NotNull
+    @Size(min = 100,max = 100000,message = "Review should be between 100 and 100000 characters")
     private String text;
 
     @Column
