@@ -12,6 +12,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class ShoppingCart {
 
     private List<OrderItem> cartItems = new ArrayList<>();
-    ProductService productService;
+    private ProductService productService;
 
     @Autowired
     public void setProductService(ProductService productService) {
@@ -70,7 +71,7 @@ public class ShoppingCart {
 
     public OrderItem getItemByProductId(Long productId){
         for (OrderItem item : cartItems) {
-            if(item.getProduct().getId() == productId) return item;
+            if(Objects.equals(item.getProduct().getId(), productId)) return item;
         }
         return null;
     }

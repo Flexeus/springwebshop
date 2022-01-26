@@ -28,13 +28,6 @@ public class OrderController {
     private final UserService userService;
     private final ShoppingCart cart;
 
-    @PostMapping("/orders")
-    public String createOrder(@RequestParam String deliveryAddress, @RequestParam String username){
-        Optional<User> user = userService.findByUsername(username);
-        if(cart.getCartItems().isEmpty() || user.isEmpty())  return "redirect:/";
-        orderService.createOrder(user.get(), cart.getCartItems(),deliveryAddress);
-        return "redirect:/";
-    }
 
     @GetMapping("/orders/new")
     public String createOrder(Model model,Principal principal){

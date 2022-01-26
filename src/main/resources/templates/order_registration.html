@@ -2,43 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: headerFragment(pageTitle='Order confirmation')">
 
-<body>
-<div class="container">
-    <div th:replace="~{fragments/navigation :: navigation(Details)}"/>
-    <div class="content">
-        <h1>Add new product</h1>
-        <form th:action="@{/orders}" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="deliveryAddress">Delivery address</label>
-                <input type="text" class="form-control" id="deliveryAddress" th:name="deliveryAddress" required>
-            </div>
-            <input type="hidden" th:value="${username}" name="username">
+    <head th:replace="fragments/head :: headerFragment(pageTitle='Order confirmation')">
 
+    <body>
+    <div class="container">
+        <div th:replace="~{fragments/navigation :: navigation(Details)}"/>
+        <div class="content">
+            <h1>Add new product</h1>
 
-            <button type="submit" class="btn btn-primary">Confirm</button>
-        </form>
-        <div class="col-75">
-            <form method="post" th:action="@{/pay}">
-                <div class="col-50">
-                    <h3>Payment</h3>
-                    <label>Accepted Cards</label>
-                    <div class="icon-container">
-                        <i class="fa fa-cc-visa" style="color:navy;"></i>
-                        <i class="fa fa-cc-amex" style="color:blue;"></i>
-                        <i class="fa fa-cc-mastercard" style="color:red;"></i>
-                        <i class="fa fa-cc-discover" style="color:orange;"></i>
+            <div class="col-75">
+                <form method="post" th:action="@{/pay}">
+                    <div class="form-group">
+                        <label for="deliveryAddress">Delivery address</label>
+                        <input type="text" class="form-control" id="deliveryAddress" th:name="deliveryAddress" required>
                     </div>
-                    <label for="price">Total</label>
-                    <input type="text" id="price" name="price" th:value="${cartprice}">
-                    <label for="description">Payment Description</label>
-                    <input type="text" id="description" name="description" placeholder="Payment Description">
-                </div>
 
-                <input type="submit" value="Continue to checkout" class="btn btn-primary">
-            </form>
+
+                    <div class="col-50">
+                        <h3>Payment</h3>
+                        <label for="price">Total</label>
+                        <input type="text" id="price" disabled name="price" th:value="${cartprice}">
+                    </div>
+                    <input type="hidden" th:value="${username}" name="username">
+                    <input type="submit" value="Continue to checkout" class="btn btn-primary">
+                </form>
+            </div>
+
+            <div th:replace="~{fragments/footer :: footer}"/>
         </div>
-
-        <div th:replace="~{fragments/footer :: footer}"/>
     </div>
 </div>
 

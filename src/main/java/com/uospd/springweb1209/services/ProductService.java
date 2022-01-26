@@ -23,10 +23,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public Page<Product> getAllProductsPage(Pageable pageable){
-        Page<Product> products = productRepository.findAll(pageable);
-       // Page<Product> products = productRepository.findAll(pageable);
-        //products.sort(Comparator.comparingLong(Product::getId));
-        return products;
+        return productRepository.findAll(pageable);
     }
 
     public Product getProductByID(Long id) {

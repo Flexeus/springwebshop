@@ -55,8 +55,6 @@ public class ProductController {
 //        if (!model.containsAttribute("review")) {
 //            model.addAttribute("review", new Review());
 //        }
-
-
         return "product_page";
     }
 

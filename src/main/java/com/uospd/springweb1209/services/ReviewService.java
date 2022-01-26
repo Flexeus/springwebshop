@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
-
     private final ReviewRepository reviewRepository;
     private final ProductService productService;
 
@@ -28,7 +27,6 @@ public class ReviewService {
         if(review.getText() == null || review.getText().isEmpty()) return;
         Product product = productService.getProductByID(productId);
         if(product == null || user == null) return;
-
         review.setProduct(product);
         if(userDidPreview(user,review.getProduct())) return;
         review.setAuthor(user);

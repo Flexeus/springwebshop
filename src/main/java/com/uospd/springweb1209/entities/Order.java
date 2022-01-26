@@ -42,17 +42,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderState status;
 
-    private String currency;
-    private String method;
-    private String intent;
-    private String description;
-    private Double price;
-//
-//    public Double getPrice(){
-//        double sum = items.stream().mapToDouble(x -> x.getCount()*x.getProduct().getPrice()).sum();
-//        System.out.println("order price:"+sum);
-//        return sum;
-//    }
+    private double price;
 
 
     public enum OrderState{
@@ -74,7 +64,6 @@ public class Order {
                 "id=" + id +
                 ", date=" + date +
                 ", items=" + items +
-                ", user=" + user.getUsername() +
                 ", DeliveryAddress='" + DeliveryAddress + '\'' +
                 ", status=" + status +
                 '}';

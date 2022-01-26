@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -26,7 +27,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(User user, List<OrderItem> items, String deliveryAddress) {
-        if(items.isEmpty() || user == null || deliveryAddress.isEmpty()) return null;
+        if(user == null || deliveryAddress.isEmpty()) throw new RuntimeException();
         Order order = new Order();
         order.setUser(user);
         order.setStatus(Order.OrderState.PROCESSING);
@@ -36,8 +37,13 @@ public class OrderService {
             item.getProduct().setAvailable(item.getProduct().getAvailable()-item.getCount());
             item.setOrder(order);
             productService.saveProduct(item.getProduct());
+            order.setPrice(order.getPrice()+item.getPrice());
         });
         items.clear();
+        return orderRepository.save(order);
+    }
+
+    public Order saveOrder(Order order){
         return orderRepository.save(order);
     }
 

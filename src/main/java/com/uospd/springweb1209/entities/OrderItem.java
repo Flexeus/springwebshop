@@ -52,4 +52,14 @@ public class OrderItem {
     public int hashCode() {
         return Objects.hash(id, order, product, count);
     }
+
+    @Override public String toString(){
+        return "OrderItem{" +
+                "id=" + id +
+                ", orderid=" + order.getId() +
+                ", product=" + product +
+                ", count=" + count +
+                ", price=" + price +
+                '}';
+    }
 }

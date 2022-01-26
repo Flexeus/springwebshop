@@ -43,18 +43,15 @@ public class MainController {
     @PostMapping("/registration")
     public String registrationPost(@Valid @ModelAttribute User user, BindingResult bindingResult){
         System.out.println("in controller");
-        if(userService.userExist(user.getUsername())) bindingResult.rejectValue("username",null,"User already registered!");
+        if(userService.userExist(user.getUsername())) bindingResult.rejectValue("username",null,"This user already registered!");
         if(userService.emailRegistered(user.getEmail())) bindingResult.rejectValue("email",null,"User with this email already registered!");
-        if(bindingResult.hasErrors()){
-            return "registration";
-        }
+        if(bindingResult.hasErrors()) return "registration";
         userService.saveUser(user);
         return "redirect:/";
     }
 
     @GetMapping({"/","/index"})
     public String shopPage(@RequestParam(required = false,defaultValue = "desc") String order, Model model, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
-
         Sort sort = order.equals("asc") ? pageable.getSort().ascending() : pageable.getSort().descending();
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         Page<Product> page = productService.getAllProductsPage(pageable);
@@ -85,9 +82,7 @@ public class MainController {
         } catch (EntityAlreadyExistException e) {
             bindingResult.rejectValue("name",null,"This category already exist");
         }
-        if(bindingResult.hasErrors()){
-            return "create_category";
-        }
+        if(bindingResult.hasErrors()) return "create_category";
         return "redirect:/";
     }
 
